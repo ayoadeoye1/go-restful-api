@@ -1,0 +1,125 @@
+definitions:
+  requests.CreateUserReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  requests.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  responses.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      error: {}
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/user/fetchall:
+    get:
+      consumes:
+      - application/json
+      description: An endpoint to get Users
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.Response'
+            type: array
+      summary: Get Users
+      tags:
+      - Users
+  /api/v1/user/signin:
+    post:
+      consumes:
+      - application/json
+      description: An endpoint for a user to sign-in
+      parameters:
+      - description: User SignIn
+        in: body
+        name: users
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+      summary: Sign-In User
+      tags:
+      - Users
+  /api/v1/user/signup:
+    post:
+      consumes:
+      - application/json
+      description: An endpoint for a new user to sign-up
+      parameters:
+      - description: Create Users
+        in: body
+        name: users
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+      summary: Sign-Up New User
+      tags:
+      - Users
+  /api/v1/user/signup/admin:
+    post:
+      consumes:
+      - application/json
+      description: An endpoint for a new admin user to sign-up
+      parameters:
+      - description: Create Users
+        in: body
+        name: users
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Response'
+      summary: Create New Admin User
+      tags:
+      - Users
+swagger: "2.0"
