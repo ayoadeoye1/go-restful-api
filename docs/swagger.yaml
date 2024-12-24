@@ -19,6 +19,29 @@ definitions:
     - email
     - password
     type: object
+  responses.ProductResponse:
+    properties:
+      brand:
+        type: string
+      category:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      price:
+        type: integer
+      stock:
+        type: integer
+    type: object
   responses.Response:
     properties:
       code:
@@ -33,6 +56,206 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/product:
+    get:
+      description: Endpoint to get a list of all products
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            items:
+              $ref: '#/definitions/responses.ProductResponse'
+            type: array
+      summary: Get all products
+      tags:
+      - Products
+  /api/v1/product/{id}:
+    delete:
+      description: Endpoint to delete a product using its ID
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product deleted successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Delete a product by ID
+      tags:
+      - Admin
+    get:
+      description: Endpoint to get details of a product by its ID
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product details
+          schema:
+            $ref: '#/definitions/responses.ProductResponse'
+      summary: Get a product by ID
+      tags:
+      - Products
+    put:
+      consumes:
+      - multipart/form-data
+      description: Endpoint to update an existing product's details
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        type: integer
+      - description: Product Name
+        in: formData
+        name: name
+        type: string
+      - description: Product Description
+        in: formData
+        name: description
+        type: string
+      - description: Product Price
+        in: formData
+        name: price
+        type: integer
+      - description: Currency
+        in: formData
+        name: currency
+        type: string
+      - description: Product Category
+        in: formData
+        name: category
+        type: string
+      - description: Product Brand
+        in: formData
+        name: brand
+        type: string
+      - description: Available Stock
+        in: formData
+        name: stock
+        type: integer
+      - description: Product Images
+        in: formData
+        name: images
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Update an existing product
+      tags:
+      - Admin
+  /api/v1/product/create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Endpoint to create a new product with details and multiple images
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Product Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Product Price
+        in: formData
+        name: price
+        required: true
+        type: integer
+      - description: Currency
+        in: formData
+        name: currency
+        required: true
+        type: string
+      - description: Product Category
+        in: formData
+        name: category
+        required: true
+        type: string
+      - description: Product Brand
+        in: formData
+        name: brand
+        required: true
+        type: string
+      - description: Available Stock
+        in: formData
+        name: stock
+        required: true
+        type: integer
+      - description: Product Images (can upload multiple)
+        in: formData
+        name: images
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Create a new product
+      tags:
+      - Admin
   /api/v1/user/fetchall:
     get:
       consumes:
@@ -55,7 +278,7 @@ paths:
             type: array
       summary: Get Users
       tags:
-      - Users
+      - Admin
   /api/v1/user/signin:
     post:
       consumes:
@@ -121,5 +344,5 @@ paths:
             $ref: '#/definitions/responses.Response'
       summary: Create New Admin User
       tags:
-      - Users
+      - Admin
 swagger: "2.0"

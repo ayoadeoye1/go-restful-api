@@ -94,7 +94,7 @@ func (userController *UserController) CreateUser(ctx *gin.Context) {
 // @Param users body requests.CreateUserReq true "Create Users"
 // @Accept json
 // @Produce application/json
-// @Tags Users
+// @Tags Admin
 // @Success 200 {object} responses.Response{}
 // @Router /api/v1/user/signup/admin [post]
 func (userController *UserController) CreateAdminUser(ctx *gin.Context) {
@@ -223,7 +223,7 @@ func (userController *UserController) SignIn(ctx *gin.Context) {
 // @Param Authorization header string true "Bearer token"
 // @Accept json
 // @Produce application/json
-// @Tags Users
+// @Tags Admin
 // @Success 200 {object} []responses.Response{}
 // @Router /api/v1/user/fetchall [get]
 func (userController *UserController) GetUsers(ctx *gin.Context) {

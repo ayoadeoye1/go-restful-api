@@ -1,23 +1,43 @@
 package models
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"time"
 )
 
-type Posts struct {
+type StringArray []string
+
+func (s *StringArray) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return errors.New("type assertion to []byte failed")
+	}
+	return json.Unmarshal(bytes, s)
+}
+
+func (s StringArray) Value() (driver.Value, error) {
+	return json.Marshal(s)
+}
+
+type Products struct {
 	ID uint `gorm:"primaryKey;autoIncrement"`
 
-	Title   string `gorm:"type:varchar(255);not null" json:"title"`
-	Content string `gorm:"type:text;not null" json:"content"`
-	Image   string `gorm:"type:varchar(512)" json:"image"`
-	Tags    string `gorm:"type:varchar(255)" json:"tags"`
-	Views   int    `gorm:"type:int;default:0" json:"views"`
-	Likes   int    `gorm:"type:int;default:0" json:"likes"`
-	UserID  uint   `gorm:"not null" json:"user_id"`
+	Name        string      `gorm:"type:varchar(255);not null" json:"name"`
+	Description string      `gorm:"type:text;not null" json:"description"`
+	Price       int         `gorm:"type:int;not null" json:"price"`
+	Currency    string      `gorm:"type:varchar(255);not null" json:"currency"`
+	Category    string      `gorm:"type:varchar(255)" json:"category"`
+	Brand       *string     `gorm:"type:varchar(255)" json:"brand"`
+	Stock       uint        `gorm:"type:int" json:"stock"`
+	Images      StringArray `gorm:"type:json" json:"images"`
 
 	// Time Stamps
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
 
-	User *Users `gorm:"foreignKey:UserID" json:"user"`
+func (Products) TabelName() string {
+	return "products"
 }

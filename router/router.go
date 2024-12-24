@@ -1,6 +1,7 @@
 package router
 
 import (
+	productcontroller "github.com/ayoadeoye1/insta-shop-screening/controller/product_controller"
 	usercontroller "github.com/ayoadeoye1/insta-shop-screening/controller/user_controller"
 	"github.com/ayoadeoye1/insta-shop-screening/middleware"
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRouter(userController *usercontroller.UserController) *gin.Engine {
+func SetupRouter(userController *usercontroller.UserController, productController *productcontroller.ProductController) *gin.Engine {
 	routes := gin.Default()
 
 	// routes.Use(cors.New(cors.Config{
@@ -23,15 +24,33 @@ func SetupRouter(userController *usercontroller.UserController) *gin.Engine {
 
 	routes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router := routes.Group("/api/v1")
-	userRouter := router.Group("/user")
-	userRouter.POST("/signup/admin", userController.CreateAdminUser)
-	userRouter.POST("/signup", userController.CreateUser)
-	userRouter.POST("/signin", userController.SignIn)
+	routes.Static("/uploads", "./public/uploads")
 
-	userRouter.Use(middleware.AdminAuth)
+	version := routes.Group("/api/v1")
+
+	userRouter := version.Group("/user")
 	{
-		userRouter.GET("/fetchall", userController.GetUsers)
+		userRouter.POST("/signup/admin", userController.CreateAdminUser)
+		userRouter.POST("/signup", userController.CreateUser)
+		userRouter.POST("/signin", userController.SignIn)
+
+		userRouter.Use(middleware.AdminAuth)
+		{
+			userRouter.GET("/fetchall", userController.GetUsers)
+		}
+	}
+
+	productRouter := version.Group("/product")
+	{
+		productRouter.GET("/", productController.FindAllProducts)
+		productRouter.GET("/:id", productController.FindProductById)
+
+		productRouter.Use(middleware.AdminAuth)
+		{
+			productRouter.POST("/create", productController.CreateNewProduct)
+			productRouter.PUT("/:id", productController.UpdateProduct)
+			productRouter.DELETE("/:id", productController.DeleteProduct)
+		}
 	}
 
 	return routes
