@@ -1,4 +1,26 @@
 definitions:
+  requests.CreateOrderItemRequest:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  requests.CreateOrderRequest:
+    properties:
+      address:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/requests.CreateOrderItemRequest'
+        type: array
+    required:
+    - address
+    - items
+    type: object
   requests.CreateUserReq:
     properties:
       email:
@@ -18,6 +40,21 @@ definitions:
     required:
     - email
     - password
+    type: object
+  requests.UpdateOrderRequest:
+    properties:
+      id:
+        type: integer
+      status:
+        description: |-
+          Address *string                   `json:"address"`
+          Items   []*CreateOrderItemRequest `json:"items"`
+        enum:
+        - Pending
+        - Processing
+        - Completed
+        - Cancelled
+        type: string
     type: object
   responses.ProductResponse:
     properties:
@@ -56,6 +93,122 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/order/all:
+    get:
+      description: Endpoint to Get all LoggedIn User's orders
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Orders fetched
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Get User's orders
+      tags:
+      - Users
+  /api/v1/order/cancel/{id}:
+    put:
+      description: Endpoint for user to revoke order request, not to be processed
+        anymore
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Cancel Order
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order updated
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Cancel order
+      tags:
+      - Users
+  /api/v1/order/change/status:
+    put:
+      description: Endpoint to update status of the order, to keep user posted about
+        the delivery
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Create Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order updated
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Update order status
+      tags:
+      - Admin
+  /api/v1/order/create:
+    post:
+      description: Endpoint to create new order, after being added to the cart on
+        the UI
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Create Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Order created
+          schema:
+            allOf:
+            - $ref: '#/definitions/responses.Response'
+            - properties:
+                message:
+                  type: string
+              type: object
+      summary: Create order
+      tags:
+      - Users
   /api/v1/product:
     get:
       description: Endpoint to get a list of all products
@@ -76,7 +229,7 @@ paths:
             type: array
       summary: Get all products
       tags:
-      - Products
+      - Users
   /api/v1/product/{id}:
     delete:
       description: Endpoint to delete a product using its ID
@@ -128,7 +281,7 @@ paths:
             $ref: '#/definitions/responses.ProductResponse'
       summary: Get a product by ID
       tags:
-      - Products
+      - Users
     put:
       consumes:
       - multipart/form-data

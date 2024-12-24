@@ -69,7 +69,7 @@ func (productController *ProductController) CreateNewProduct(ctx *gin.Context) {
 // @Description Endpoint to get a list of all products
 // @Param Authorization header string true "Bearer token"
 // @Produce application/json
-// @Tags Products
+// @Tags Users
 // @Success 200 {array} responses.ProductResponse "List of products"
 // @Router /api/v1/product [get]
 func (productController *ProductController) FindAllProducts(ctx *gin.Context) {
@@ -88,7 +88,7 @@ func (productController *ProductController) FindAllProducts(ctx *gin.Context) {
 // @Param Authorization header string true "Bearer token"
 // @Param id path int true "Product ID"
 // @Produce application/json
-// @Tags Products
+// @Tags Users
 // @Success 200 {object} responses.ProductResponse "Product details"
 // @Router /api/v1/product/{id} [get]
 func (productController *ProductController) FindProductById(ctx *gin.Context) {

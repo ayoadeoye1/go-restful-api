@@ -26,12 +26,7 @@ make start
 
 ## Access Documetation
 
-- Base Url
-```
-http://localhost:8080 
-```
-
-- Swagger API
+- Open API Swagger
 ```
 http://localhost:8080/swagger/index.html#/
 ```

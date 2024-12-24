@@ -8,13 +8,17 @@ import (
 	"strconv"
 
 	"github.com/ayoadeoye1/insta-shop-screening/config"
+	ordercontroller "github.com/ayoadeoye1/insta-shop-screening/controller/order_controller"
 	productcontroller "github.com/ayoadeoye1/insta-shop-screening/controller/product_controller"
 	usercontroller "github.com/ayoadeoye1/insta-shop-screening/controller/user_controller"
 	"github.com/ayoadeoye1/insta-shop-screening/helper"
 	"github.com/ayoadeoye1/insta-shop-screening/models"
+	orderitemrepo "github.com/ayoadeoye1/insta-shop-screening/repository/order_item_repo"
+	orderrepository "github.com/ayoadeoye1/insta-shop-screening/repository/order_repository"
 	productrepository "github.com/ayoadeoye1/insta-shop-screening/repository/product_repository"
 	userrepository "github.com/ayoadeoye1/insta-shop-screening/repository/user_repository"
 	"github.com/ayoadeoye1/insta-shop-screening/router"
+	orderservice "github.com/ayoadeoye1/insta-shop-screening/services/order_service"
 	productservice "github.com/ayoadeoye1/insta-shop-screening/services/product_service"
 	userservice "github.com/ayoadeoye1/insta-shop-screening/services/user_service"
 	"github.com/go-playground/validator/v10"
@@ -52,7 +56,13 @@ func main() {
 	productsService := productservice.NewProductServiceImpl(productsRepository, validate)
 	productController := productcontroller.NewProductController(*productsService)
 
-	routes := router.SetupRouter(userController, productController)
+	db.AutoMigrate(&models.Order{}, &models.OrderItem{})
+	ordersRepository := orderrepository.NewOrderRepoImpl(db)
+	ordersItemRepository := orderitemrepo.NewOrderItemRepoImpl(db)
+	ordersService := orderservice.NewOrderServiceImpl(ordersRepository, ordersItemRepository, validate, db)
+	orderController := ordercontroller.NewOrderController(ordersService)
+
+	routes := router.SetupRouter(userController, productController, orderController)
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),

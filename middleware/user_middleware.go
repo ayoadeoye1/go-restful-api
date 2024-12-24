@@ -41,6 +41,10 @@ func UserAuth(c *gin.Context) {
 	}
 
 	fmt.Printf("Token verified successfully. Claims: %+v\\n", token.Claims)
+
+	userID := token.Claims.(jwt.MapClaims)["id"].(float64)
+	c.Set("userID", uint(userID))
+
 	c.Next()
 }
 
@@ -65,6 +69,9 @@ func AdminAuth(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	userID := claims["id"].(float64)
+	c.Set("userID", uint(userID))
 
 	c.Next()
 }

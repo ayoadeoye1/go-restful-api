@@ -180,7 +180,6 @@ func (userController *UserController) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	//Find User
 	loginUser, err := userController.userService.FindByEmail(LoginReq.Email)
 	if err != nil {
 		helper.SendError(ctx, http.StatusBadRequest, "Error occured while searching for user", err.Error())
@@ -192,14 +191,12 @@ func (userController *UserController) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	//Verify Password
 	err = bcrypt.CompareHashAndPassword([]byte(loginUser.Password), []byte(LoginReq.Password))
 	if err != nil {
 		helper.SendError(ctx, http.StatusBadRequest, "Incorrect password", err.Error())
 		return
 	}
 
-	//Generate JWT Token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":   loginUser.ID,
 		"mail": loginUser.Email,

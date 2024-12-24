@@ -86,66 +86,6 @@ func (p *ProductServiceImpl) FindAll() ([]responses.ProductResponse, error) {
 	return productResponses, nil
 }
 
-// func (p *ProductServiceImpl) Update(product requests.UpdateProductReq, ctx *gin.Context) error {
-// 	err := p.Validate.Struct(product)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	existingProduct, err := p.ProductRepository.FindById(int(product.ID))
-// 	if err != nil {
-// 		return fmt.Errorf("failed to find product with ID %d: %w", product.ID, err)
-// 	}
-
-// 	if product.Name != nil {
-// 		existingProduct.Name = *product.Name
-// 	}
-// 	if product.Description != nil {
-// 		existingProduct.Description = *product.Description
-// 	}
-// 	if product.Price != nil {
-// 		existingProduct.Price = *product.Price
-// 	}
-// 	if product.Currency != nil {
-// 		existingProduct.Currency = *product.Currency
-// 	}
-// 	if product.Category != nil {
-// 		existingProduct.Category = *product.Category
-// 	}
-// 	if product.Brand != nil {
-// 		existingProduct.Brand = product.Brand
-// 	}
-// 	if product.Stock != nil {
-// 		existingProduct.Stock = *product.Stock
-// 	}
-
-// 	if len(product.Images) > 0 {
-// 		uploadedImageURLs, err := helper.ProcessUploadedImages(product.Images, ctx)
-// 		if err != nil {
-// 			return fmt.Errorf("failed to upload images: %w", err)
-// 		}
-// 		existingProduct.Images = uploadedImageURLs
-// 	}
-
-// 	productModel := models.Products{
-// 		Name:        existingProduct.Name,
-// 		Description: existingProduct.Description,
-// 		Price:       existingProduct.Price,
-// 		Currency:    existingProduct.Currency,
-// 		Category:    existingProduct.Category,
-// 		Brand:       existingProduct.Brand,
-// 		Stock:       existingProduct.Stock,
-// 		Images:      existingProduct.Images,
-// 	}
-
-// 	err = p.ProductRepository.Edit(productModel)
-// 	if err != nil {
-// 		return fmt.Errorf("failed to update product: %w", err)
-// 	}
-
-// 	return nil
-// }
-
 func (p *ProductServiceImpl) Update(product requests.UpdateProductReq, ctx *gin.Context) error {
 	err := p.Validate.Struct(product)
 	if err != nil {
