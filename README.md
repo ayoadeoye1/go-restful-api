@@ -3,7 +3,7 @@
 ## CLONE
 
 ```shell
-git clone git@github.com:ayoadeoye1/insta-shop-screening.git
+git clone git@github.com:ayoadeoye1/go-restful-api.git
 ```
 
 ## INSTALL PACKAGES

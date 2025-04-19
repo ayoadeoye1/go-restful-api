@@ -1,4 +1,3 @@
-
 dev:
 	@if command -v air > /dev/null; then \
             air; \
@@ -6,7 +5,7 @@ dev:
         else \
             read -p "Go's 'air' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
             if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
-                go install github.com/air-verse/air@latest; \
+                go install github.com/cosmtrek/air@v1.42.0; \
                 air; \
                 echo "Watching...";\
             else \
@@ -14,7 +13,6 @@ dev:
                 exit 1; \
             fi; \
         fi
-
 start:
 	@go run .
 	
